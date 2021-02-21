@@ -58,7 +58,7 @@ public class EventControllerTests {
                     .accept(MediaTypes.HAL_JSON)
                     .content(objectMapper.writeValueAsString(event))) // 요청 헤더에 클라이언트가 어떤 응답을 받고 싶는지 적는 accept 헤더에 적는것이다. 그래서 HAL_JSON 이라는 미디어 타입을 받고 싶다는 의미
                 .andDo(print())
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE,MediaTypes.HAL_JSON_VALUE))
@@ -101,4 +101,20 @@ public class EventControllerTests {
                 .andExpect(status().isBadRequest())
         ;
     }
+
+
+    @Test
+    public void createEvent_Bad_Request_Empty_Input() throws Exception { // 입력값이 이상한 경우에는 bad request 나와야
+        //given 
+        EventDto eventDto = EventDto.builder().build();
+        //when
+        this.mockMvc.perform(post("/api/events")
+                            .contentType(MediaType.APPLICATION_JSON)
+                             .content(objectMapper.writeValueAsString(eventDto)))
+                    .andExpect(status().isBadRequest());
+
+        //then 
+    }
+
+
 }
