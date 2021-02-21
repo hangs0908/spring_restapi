@@ -1,6 +1,7 @@
 package me.hangjin.restapi.events;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,13 +29,14 @@ public class EventControllerTests {
     @Autowired
     ObjectMapper objectMapper; // 객체를 -> JSON 으로 바꾸기 위함, 스프링부트가 자동적으로 objectmapper를 빈으로 등록해서 사용가능하다.
 
-    @MockBean
-    EventRepository eventRepository; // mcok 객체이기 때문에 nullpoint exception 발생 그래서 값을 정해줘야 한다.
+//    @MockBean
+//    EventRepository eventRepository; // mcok 객체이기 때문에 nullpoint exception 발생 그래서 값을 정해줘야 한다.
 
     @Test
     public void createEvent() throws Exception {
         //given
         Event event = Event.builder()
+                .id(100) //무시됨
                 .name("Spring")
                 .description("REST API development with Spring")
                 .beginEnrollmentDateTime(LocalDateTime.of(2018,11,23,14,21))
@@ -45,11 +47,14 @@ public class EventControllerTests {
                 .maxPrice(200)
                 .limitEnrollment(100)
                 .location("강남역 D2 스타터 팩토리")
+                .free(true) // 무시됨
+                .offline(false) //무시됨
+                .eventStatus(EventStatus.PUBLISHED)
                 .build();
 
         //when
-        event.setId(10);
-        when(eventRepository.save(event)).thenReturn(event);
+//        event.setId(10);
+//        when(eventRepository.save(event)).thenReturn(event);
 
         //then
         mockMvc.perform(post("/api/events/")
@@ -60,7 +65,9 @@ public class EventControllerTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,MediaTypes.HAL_JSON_VALUE));
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,MediaTypes.HAL_JSON_VALUE))
+                .andExpect(jsonPath("id").value(Matchers.not(100)))
+                .andExpect(jsonPath("free").value(Matchers.not(true)));
     }
 
 
