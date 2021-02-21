@@ -35,8 +35,44 @@ public class EventControllerTests {
     @Test
     public void createEvent() throws Exception {
         //given
+        EventDto event = EventDto.builder()
+                .name("Spring")
+                .description("REST API development with Spring")
+                .beginEnrollmentDateTime(LocalDateTime.of(2018,11,23,14,21))
+                .closeEnrollmentDateTime(LocalDateTime.of(2018,11,24,14,21))
+                .beginEventDateTime(LocalDateTime.of(2018,11,25,14,21))
+                .endEventDateTime(LocalDateTime.of(2018,11,26,14,21))
+                .basePrice(100)
+                .maxPrice(200)
+                .limitEnrollment(100)
+                .location("강남역 D2 스타터 팩토리")
+                .build();
+
+        //when
+//        event.setId(10);
+//        when(eventRepository.save(event)).thenReturn(event);
+
+        //then
+        mockMvc.perform(post("/api/events/")
+                    .contentType(MediaType.APPLICATION_JSON) // 요청의 contentType은 JSON 이다.
+                    .accept(MediaTypes.HAL_JSON)
+                    .content(objectMapper.writeValueAsString(event))) // 요청 헤더에 클라이언트가 어떤 응답을 받고 싶는지 적는 accept 헤더에 적는것이다. 그래서 HAL_JSON 이라는 미디어 타입을 받고 싶다는 의미
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("id").exists())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,MediaTypes.HAL_JSON_VALUE))
+                .andExpect(jsonPath("id").value(Matchers.not(100)))
+                .andExpect(jsonPath("free").value(Matchers.not(true)))
+        ;
+    }
+
+
+    @Test
+    public void createEvent_Bad_Request() throws Exception { // 입력값 이외의 값 에러 발생.
+        //given
         Event event = Event.builder()
-                .id(100) //무시됨
+                .id(100)
                 .name("Spring")
                 .description("REST API development with Spring")
                 .beginEnrollmentDateTime(LocalDateTime.of(2018,11,23,14,21))
@@ -58,17 +94,11 @@ public class EventControllerTests {
 
         //then
         mockMvc.perform(post("/api/events/")
-                    .contentType(MediaType.APPLICATION_JSON) // 요청의 contentType은 JSON 이다.
-                    .accept(MediaTypes.HAL_JSON)
-                    .content(objectMapper.writeValueAsString(event))) // 요청 헤더에 클라이언트가 어떤 응답을 받고 싶는지 적는 accept 헤더에 적는것이다. 그래서 HAL_JSON 이라는 미디어 타입을 받고 싶다는 의미
+                .contentType(MediaType.APPLICATION_JSON) // 요청의 contentType은 JSON 이다.
+                .accept(MediaTypes.HAL_JSON)
+                .content(objectMapper.writeValueAsString(event))) // 요청 헤더에 클라이언트가 어떤 응답을 받고 싶는지 적는 accept 헤더에 적는것이다. 그래서 HAL_JSON 이라는 미디어 타입을 받고 싶다는 의미
                 .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("id").exists())
-                .andExpect(header().exists(HttpHeaders.LOCATION))
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,MediaTypes.HAL_JSON_VALUE))
-                .andExpect(jsonPath("id").value(Matchers.not(100)))
-                .andExpect(jsonPath("free").value(Matchers.not(true)));
+                .andExpect(status().isBadRequest())
+        ;
     }
-
-
 }
