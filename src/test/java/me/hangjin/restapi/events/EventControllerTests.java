@@ -72,7 +72,7 @@ public class EventControllerTests {
 
     @Test
     @DisplayName("입력 받을 수 없는 값을 사용하는 경우에 에러가 발생하는 테스")
-    public void createEvent_Bad_Request() throws Exception { // 입력값 이외의 값 에러 발생.
+    public void createEvent_Bad_Request() throws Exception {
         //given
         Event event = Event.builder()
                 .id(100)
@@ -141,8 +141,13 @@ public class EventControllerTests {
         this.mockMvc.perform(post("/api/events")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(eventDto)))
+                .andExpect(status().isBadRequest())
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                //.andExpect(jsonPath("$[0].objectName").exists())
+                .andExpect(jsonPath("$[0].field").exists())
+                .andExpect(jsonPath("$[0].defaultMessage").exists())
+                .andExpect(jsonPath("$[0].code").exists());
+                //.andExpect(jsonPath("$[0].rejectedValue").exists());
 
         //then
     }
