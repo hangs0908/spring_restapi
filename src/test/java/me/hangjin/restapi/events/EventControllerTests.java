@@ -2,6 +2,7 @@ package me.hangjin.restapi.events;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -33,6 +34,7 @@ public class EventControllerTests {
 //    EventRepository eventRepository; // mcok 객체이기 때문에 nullpoint exception 발생 그래서 값을 정해줘야 한다.
 
     @Test
+    @DisplayName("정상적으로 이벤틀르 생성하는 테스트")
     public void createEvent() throws Exception {
         //given
         EventDto event = EventDto.builder()
@@ -69,6 +71,7 @@ public class EventControllerTests {
 
 
     @Test
+    @DisplayName("입력 받을 수 없는 값을 사용하는 경우에 에러가 발생하는 테스")
     public void createEvent_Bad_Request() throws Exception { // 입력값 이외의 값 에러 발생.
         //given
         Event event = Event.builder()
@@ -104,7 +107,8 @@ public class EventControllerTests {
 
 
     @Test
-    public void createEvent_Bad_Request_Empty_Input() throws Exception { // 입력값이 이상한 경우에는 bad request 나와야
+    @DisplayName("입력 값이 비어있는 경우에 에러가 발생하는 테스트")
+    public void createEvent_Bad_Request_Empty_Input() throws Exception {
         //given 
         EventDto eventDto = EventDto.builder().build();
         //when
@@ -118,6 +122,7 @@ public class EventControllerTests {
 
 
     @Test
+    @DisplayName("입력값이 잘못된 경우에 에러가 발생하는 테스트")
     public void createEvent_Bad_Request_Wrong_Input() throws Exception { // 입력값이 이상한 경우에는 bad request 나와야
         //given
         EventDto eventDto = EventDto.builder()
