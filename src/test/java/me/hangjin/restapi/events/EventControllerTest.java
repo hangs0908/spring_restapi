@@ -65,6 +65,7 @@ class EventControllerTest {
         ;
     }
 
+
     @Test
     public void createEvent_Bad_Request() throws Exception {
         //given
@@ -92,10 +93,12 @@ class EventControllerTest {
                 .accept(MediaTypes.HAL_JSON)
                 .content(objectMapper.writeValueAsString(event)))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
-
+                .andExpect(status().isBadRequest()) // spring.deserialization.fail-on~ : true / json -> 객체일때 알려지지 않는 프로퍼티가 올때 fail 이 true
         ;
     }
+
+
+
 
 
 }
