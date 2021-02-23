@@ -118,7 +118,18 @@ class EventControllerTest {
     @DisplayName("정해진 입력값으로 잘 들어오지만, 잘못된 입력값이 들어올 경우 Bad request")
     public void createEvent_Bad_Request_Wrong_Input() throws Exception {
         //given
-        EventDto eventDto = EventDto.builder().build();
+        EventDto eventDto = EventDto.builder()
+                .name("Spring")
+                .description("Rest api with Spring")
+                .beginEnrollmentDateTime(LocalDateTime.of(2018,11,26,1,21))
+                .closeEnrollmentDateTime(LocalDateTime.of(2018,11,25,1,21))
+                .beginEventDateTime(LocalDateTime.of(2018,11,24,1,21))
+                .endEventDateTime(LocalDateTime.of(2018,11,23,1,21))
+                .basePrice(100)
+                .maxPrice(200)
+                .limitEnrollment(100)
+                .location("강남역 2번 출구 카")
+                .build();
 
         //when
 
@@ -126,6 +137,7 @@ class EventControllerTest {
         this.mockMvc.perform(post("/api/events")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(eventDto)))
+                .andDo(print())
                 .andExpect(status().isBadRequest());
     }
 
