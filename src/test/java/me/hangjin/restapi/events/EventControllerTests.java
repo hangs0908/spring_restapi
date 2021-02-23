@@ -99,7 +99,7 @@ public class EventControllerTests {
                                 fieldWithPath("location").description("location of new event"),
                                 fieldWithPath("basePrice").description("base price of new event"),
                                 fieldWithPath("maxPrice").description("max price of new event"),
-                                fieldWithPath("limitOfEnrollment").description("limit of enrollment")
+                                fieldWithPath("limitEnrollment").description("limit of enrollment")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.LOCATION).description("Location header"),
@@ -121,14 +121,13 @@ public class EventControllerTests {
                                 fieldWithPath("location").description("location of new event"),
                                 fieldWithPath("basePrice").description("base price of new event"),
                                 fieldWithPath("maxPrice").description("max price of new event"),
-                                fieldWithPath("limitOfEnrollment").description("limit of enrollment"),
+                                fieldWithPath("limitEnrollment").description("limit of enrollment"),
                                 fieldWithPath("free").description("it tells if this event is free or not"),
                                 fieldWithPath("offline").description("it tells if this event is offline or not"),
                                 fieldWithPath("eventStatus").description("event status"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.query-events.href").description("link to query event list"),
-                                fieldWithPath("_links.update-event.href").description("link to update existing event"),
-                                fieldWithPath("_links.profile.href").description("link to profile")
+                                fieldWithPath("_links.update-event.href").description("link to update existing event")
                         )
                         ))
         ;
