@@ -3,6 +3,7 @@ package me.hangjin.restapi.events;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,8 +41,12 @@ public class EventController {
         Event event = modelMapper.map(eventDto, Event.class); // 입력값 제
         event.update();
         Event newEvent = eventRepository.save(event);
-        URI createdUri = linkTo(EventController.class).slash(newEvent.getId()).toUri();
-        return ResponseEntity.created(createdUri).body(event);
+        EventResource eventResource = new EventResource(event);
+        WebMvcLinkBuilder selfLinkBuilder = linkTo(EventController.class).slash(newEvent.getId());
+        URI createdUri = selfLinkBuilder.toUri();
+        eventResource.add(linkTo(EventController.class).withRel("query-events"));
+        eventResource.add(selfLinkBuilder.withRel("update-event"));
+        return ResponseEntity.created(createdUri).body(eventResource);
         // linkto(methodOn eventController의 클래스에 있는 메소드 createEvent() 에서 uri 를 불러오는 것이다.
         // 그래서 toUri() 로 새로운 uri를 만들어 내고. -> /api/events/{id}
         // 이를  응답 메세지에 보내게 된다.
