@@ -2,6 +2,7 @@ package me.hangjin.restapi.events;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,7 +99,34 @@ class EventControllerTest {
     }
 
 
+    @Test
+    @DisplayName("정해진 입력값으로 잘 들어오지만, 비어있는 입력값이 들어올 경우 Bad request")
+    public void createEvent_Bad_Request_Empty_Input() throws Exception {
+        //given 
+        EventDto eventDto = EventDto.builder().build();
 
+        //when 
 
+        //then
+        this.mockMvc.perform(post("/api/events")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(eventDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("정해진 입력값으로 잘 들어오지만, 잘못된 입력값이 들어올 경우 Bad request")
+    public void createEvent_Bad_Request_Wrong_Input() throws Exception {
+        //given
+        EventDto eventDto = EventDto.builder().build();
+
+        //when
+
+        //then
+        this.mockMvc.perform(post("/api/events")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(eventDto)))
+                .andExpect(status().isBadRequest());
+    }
 
 }
