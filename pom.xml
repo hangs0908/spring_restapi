@@ -76,6 +76,7 @@
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
@@ -100,6 +101,49 @@
                         <version>${spring-restdocs.version}</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+
+                        <phase>prepare-package</phase>
+
+                        <goals>
+
+                            <goal>copy-resources</goal>
+
+                        </goals>
+
+                        <configuration>
+
+                            <outputDirectory>
+
+                                ${project.build.outputDirectory}/static/docs
+
+                            </outputDirectory>
+
+                            <resources>
+
+                                <resource>
+
+                                    <directory>
+
+                                        ${project.build.directory}/generated-docs
+
+                                    </directory>
+
+                                </resource>
+
+                            </resources>
+
+                        </configuration>
+
+                    </execution>
+
+                </executions>
+
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
