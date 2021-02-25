@@ -1,27 +1,16 @@
 package me.hangjin.restapi.events;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import me.hangjin.restapi.common.RestDocsConfiguration;
-import org.hamcrest.Matchers;
+import me.hangjin.restapi.common.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.stream.IntStream;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
@@ -31,25 +20,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@AutoConfigureMockMvc //mock web 환경이 제공되. 웹 서버를 띄우지 않고 테스트를 가능하게 한
-@AutoConfigureRestDocs
-@Import({RestDocsConfiguration.class})
-@ActiveProfiles("test") //application과 우리가 선언한 application -test 프로퍼티즈를 사용한다. // 테스트에서 재정의할것들을 테스트 포로퍼티즈에서 설정하고, 애플리케이션과 테스트 공용으로 사용할것들은 application 포토퍼티즈에 넣는다.
-@SpringBootTest
-public class EventControllerTests {
 
-    @Autowired
-    MockMvc mockMvc; // 가짜 요청을 만들어서 dispacherservlet으로 보내고 거기에 따른 응답을 검증할 수 있다. 웹서버를 띄우지 않ㄴ는다.
-
-    @Autowired
-    ObjectMapper objectMapper; // 객체를 -> JSON 으로 바꾸기 위함, 스프링부트가 자동적으로 objectmapper를 빈으로 등록해서 사용가능하다.
+public class EventControllerTests extends BaseControllerTest {
 
     @Autowired
     EventRepository eventRepository;
-
-    @Autowired
-    ModelMapper modelMapper;
-
 //    @MockBean
 //    EventRepository eventRepository; // mcok 객체이기 때문에 nullpoint exception 발생 그래서 값을 정해줘야 한다.
 
