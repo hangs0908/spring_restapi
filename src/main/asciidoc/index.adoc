@@ -1,4 +1,4 @@
-= Natural REST API Guide
+= REST API Guide
 백기선;
 :doctype: book
 :icons: font
@@ -69,7 +69,7 @@ include::{snippets}/errors/response-fields.adoc[]
 
 예를 들어, 잘못된 요청으로 이벤트를 만들려고 했을 때 다음과 같은 `400 Bad Request` 응답을 받는다.
 
-include::{snippets}/errors/http-response.adoc[]
+//include::{snippets}/errors/http-response.adoc[]
 
 [[overview-hypermedia]]
 == 하이퍼미디어
