@@ -1,10 +1,14 @@
 package me.hangjin.restapi.accounts;
 
+import org.hamcrest.Matchers;
+import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Set;
@@ -42,6 +46,18 @@ class AccountServiceTest {
 
         //then
         assertThat(userDetails.getPassword()).isEqualTo(password);
+    }
+
+
+    @Test
+    public void findByUsernameFail() throws Exception {
+        //given
+
+        //when
+
+        //then
+        assertThrows(UsernameNotFoundException.class, () -> accountService.loadUserByUsername("hang@gmail.com"));
+
     }
 
 
