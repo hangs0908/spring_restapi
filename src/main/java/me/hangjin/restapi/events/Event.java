@@ -36,6 +36,8 @@ public class Event {
     @ManyToOne
     private Account manager; //이벤트에서만 account를 참조 할수있도록
 
+
+
    public void update() {
 
         if(this.basePrice == 0 && this.maxPrice == 0) {
