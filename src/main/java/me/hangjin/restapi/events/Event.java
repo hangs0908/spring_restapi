@@ -1,6 +1,7 @@
 package me.hangjin.restapi.events;
 
 import lombok.*;
+import me.hangjin.restapi.accounts.Account;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -32,7 +33,10 @@ public class Event {
     @Enumerated(EnumType.STRING)
     private EventStatus eventStatus = EventStatus.DRAFT;
 
-    public void update() {
+    @ManyToOne
+    private Account manager; //이벤트에서만 account를 참조 할수있도록
+
+   public void update() {
 
         if(this.basePrice == 0 && this.maxPrice == 0) {
             this.free = true;
