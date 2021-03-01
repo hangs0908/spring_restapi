@@ -49,15 +49,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception { // 스프링 시큐리티 설정
-        http
-                .anonymous()
-                .and()
-                .formLogin()
-                .and()
-                .authorizeRequests()
-                .mvcMatchers(HttpMethod.GET, "/api/**").anonymous()
-                .anyRequest().authenticated();
-    }
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception { // 스프링 시큐리티 설정
+//        http
+//                .anonymous()
+//                .and()
+//                .formLogin()
+//                .and()
+//                .authorizeRequests()
+//                .mvcMatchers(HttpMethod.GET, "/api/**").anonymous()
+//                .anyRequest().authenticated();
+//    }
+
+
+
 }
