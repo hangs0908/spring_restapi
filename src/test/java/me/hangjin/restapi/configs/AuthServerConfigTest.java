@@ -26,8 +26,8 @@ class AuthServerConfigTest extends BaseControllerTest {
     @DisplayName("인증 토큰을 발급 받는 테스트")
     public void getAuthToken() throws Exception {
         //given
-        String clientId = "myApp";
-        String clientSecret = "pass";
+        String clientId = "myApp"; // 우리가 만들고 있는 Application ID
+        String clientSecret = "pass"; // 그에 대한 비밀번호
 
         String username = "hangjin@email.com";
         String password = "hangjin";
