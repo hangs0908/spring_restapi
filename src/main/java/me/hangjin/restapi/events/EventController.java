@@ -73,7 +73,7 @@ public class EventController {
     public ResponseEntity getEvent(@PathVariable Integer id) {
         Optional<Event> optionalEvent = eventRepository.findById(id);
         if(optionalEvent.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();  
         }
         Event event = optionalEvent.get();
         EventResource eventResource = new EventResource(event);

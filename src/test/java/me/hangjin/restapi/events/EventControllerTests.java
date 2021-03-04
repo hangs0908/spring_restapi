@@ -5,6 +5,7 @@ import me.hangjin.restapi.accounts.AccountRepository;
 import me.hangjin.restapi.accounts.AccountRole;
 import me.hangjin.restapi.accounts.AccountService;
 import me.hangjin.restapi.common.BaseControllerTest;
+import me.hangjin.restapi.configs.AppProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,9 @@ public class EventControllerTests extends BaseControllerTest {
     EventRepository eventRepository;
 //    @MockBean
 //    EventRepository eventRepository; // mcok 객체이기 때문에 nullpoint exception 발생 그래서 값을 정해줘야 한다.
+
+    @Autowired
+    AppProperties appProperties;
 
     @BeforeEach
     public void setUp() {
@@ -148,15 +152,15 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     private String getAccessToken() throws Exception {
-        String clientId = "myApp"; // 우리가 만들고 있는 Application ID
-        String clientSecret = "pass"; // 그에 대한 비밀번호
-
-        String username = "hangjin@email.com";
-        String password = "hangjin";
+//        String clientId = "myApp"; // 우리가 만들고 있는 Application ID
+//        String clientSecret = "pass"; // 그에 대한 비밀번호
+//
+//        String username = "hangjin@email.com";
+//        String password = "hangjin";
 
         Account hangjin = Account.builder()
-                .email(username)
-                .password(password)
+                .email(appProperties.getUserUsername())
+                .password(appProperties.getUserPassword())
                 .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
                 .build();
 
@@ -165,9 +169,9 @@ public class EventControllerTests extends BaseControllerTest {
 
         //then
         ResultActions perform = this.mockMvc.perform(post("/oauth/token")
-                .with(httpBasic(clientId, clientSecret)) //clientId와 ClientSecret을 가지고Basic Oauth라는 헤더를 만든것
-                .param("username", username) // 파라미터로 grant type , username, password를 줘야함
-                .param("password", password)
+                .with(httpBasic(appProperties.getClientId(), appProperties.getClientSecret())) //clientId와 ClientSecret을 가지고Basic Oauth라는 헤더를 만든것
+                .param("username", appProperties.getUserUsername()) // 파라미터로 grant type , username, password를 줘야함
+                .param("password", appProperties.getUserPassword())
                 .param("grant_type", "password")
         );
         String responseBody = perform.andReturn().getResponse().getContentAsString();
