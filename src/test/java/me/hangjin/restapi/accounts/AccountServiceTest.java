@@ -1,5 +1,6 @@
 package me.hangjin.restapi.accounts;
 
+import me.hangjin.restapi.common.BaseTest;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.jupiter.api.Test;
@@ -18,9 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-@SpringBootTest
-@ActiveProfiles("test")
-class AccountServiceTest {
+class AccountServiceTest extends BaseTest {
 
     @Autowired
     AccountService accountService;

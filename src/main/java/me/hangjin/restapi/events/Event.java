@@ -1,7 +1,9 @@
 package me.hangjin.restapi.events;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 import me.hangjin.restapi.accounts.Account;
+import me.hangjin.restapi.accounts.AccountSerializer;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -34,6 +36,7 @@ public class Event {
     private EventStatus eventStatus = EventStatus.DRAFT;
 
     @ManyToOne
+    @JsonSerialize(using = AccountSerializer.class)
     private Account manager; //이벤트에서만 account를 참조 할수있도록
 
 

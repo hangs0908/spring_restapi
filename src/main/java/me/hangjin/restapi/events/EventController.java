@@ -1,6 +1,7 @@
 package me.hangjin.restapi.events;
 
 import lombok.RequiredArgsConstructor;
+import me.hangjin.restapi.accounts.Account;
 import me.hangjin.restapi.common.ErrorsResource;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -11,7 +12,9 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +37,9 @@ public class EventController {
 
 
     @PostMapping
-    public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
+    public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors,
+                                      @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ?  null : account") Account currentUser){
+
         if(errors.hasErrors()) {
             return badRequest(errors);
         }
@@ -46,6 +51,7 @@ public class EventController {
 
         Event event = modelMapper.map(eventDto, Event.class); // 입력값 제
         event.update();
+        event.setManager(currentUser);
         Event newEvent = eventRepository.save(event);
         EventResource eventResource = new EventResource(event);
         WebMvcLinkBuilder selfLinkBuilder = linkTo(EventController.class).slash(newEvent.getId());
@@ -61,16 +67,23 @@ public class EventController {
 
 
     @GetMapping
-    public ResponseEntity queryEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler) {
+    public ResponseEntity queryEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler
+                                    , @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ?  null : account") Account account) {
+
+
         Page<Event> page = this.eventRepository.findAll(pageable);
         PagedModel<EntityModel<Event>> entityModels = assembler.toModel(page, e -> new EventResource(e));//page를  -> 리소스로 변경할 수 있다. 페이지에 대한 링크 정보 추
         //page에 대한 링크라 하면 현재,다음,이전 첫 등등 정보들을 보여준다.
         entityModels.add(new Link("/docs/index.html#resources-events-list").withRel("profile"));
+        if(account != null) {
+            entityModels.add(linkTo((EventController.class)).withRel("create-event"));
+        }
         return ResponseEntity.ok(entityModels);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getEvent(@PathVariable Integer id) {
+    public ResponseEntity getEvent(@PathVariable Integer id,
+                                   @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ?  null : account") Account currentUser) {
         Optional<Event> optionalEvent = eventRepository.findById(id);
         if(optionalEvent.isEmpty()) {
             return ResponseEntity.notFound().build();  
@@ -78,12 +91,16 @@ public class EventController {
         Event event = optionalEvent.get();
         EventResource eventResource = new EventResource(event);
         eventResource.add(new Link("/docs/index.html#resources-events-get").withRel("profile"));
+        if(event.getManager().equals(currentUser)) {
+            eventResource.add(linkTo(EventController.class).slash(event.getId()).withRel("update-event"));
+        }
         return ResponseEntity.ok(eventResource);
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity updateEvent(@PathVariable Integer id, @RequestBody @Valid EventDto eventDto, Errors errors) {
+    public ResponseEntity updateEvent(@PathVariable Integer id, @RequestBody @Valid EventDto eventDto, Errors errors,
+                                      @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ?  null : account") Account currentUser) {
         Optional<Event> optionalEvent = eventRepository.findById(id);
         if(optionalEvent.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -98,6 +115,9 @@ public class EventController {
             return badRequest(errors);
         }
         Event existingEvent = optionalEvent.get();
+        if(!existingEvent.getManager().equals(currentUser)) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
         this.modelMapper.map(eventDto, existingEvent);
         Event savedEvent = this.eventRepository.save(existingEvent);
 
